@@ -1,24 +1,12 @@
 ﻿function Create-MP4 {
     param(
-        [Parameter()]
         [string]$Title,
-
-        [Parameter()]
         [string]$diskReaderDrive = "E:\",
-        
-        [Parameter()]
         [string]$MakeMKVcon = "C:\Program Files (x86)\MakeMKV\makemkvcon64.exe",
-        
-        [Parameter()]
         [string]$HandBrakeCLI = "C:\Program Files\HandBrakeCLI\HandBrakeCLI.exe",
-
-        [Parameter()]
+        [string]$ConfigFilePath = "C:\scripts\Config-Create-MP4.psd1",
         [string]$ProcessingPath = "C:\temp\mkv\",
-        
-        [Parameter()]
         [string]$OutputDirectory = "J:\media\movies",
-
-        [Parameter()]
         [string]$ArchivePath = "C:\temp\mkv\archive\"
     )
     $sw = New-Object System.Diagnostics.Stopwatch
@@ -81,9 +69,11 @@
 
     # Send notification that new disc can be started
     try {
-        $email = "myemail@gmail.com"
-        $smsEmail = "mycellnumber@provider.domain.com"
-        $appPassword = "my_app_password"
+        $config = Import-PowerShellDataFile $ConfigFilePath
+        $email = $config.email
+        $smsEmail = $config.smsEmail
+        $appPassword = $config.appPassword
+
         Write-Host "Sending notification..."
         $smtpServer = "smtp.gmail.com"
         $smtpFrom = $email
@@ -104,7 +94,12 @@
     $outputFilePath = Join-Path $nasDestination $outputFileName
 
     Write-Host "Starting conversion of $mkvFilePath to $outputFilePath"
-    Start-Process -FilePath $HandBrakeCLI -ArgumentList $('-i "'+$mkvFilePath+'"'), $('-o "'+$outputFilePath+'"') -WindowStyle Hidden -Wait -RedirectStandardError "$mkvDir\\error.log" -RedirectStandardOutput "$mkvDir\\output.log"
+    Start-Process -FilePath $HandBrakeCLI `
+        -ArgumentList $('-i "'+$mkvFilePath+'"'), $('-o "'+$outputFilePath+'"') `
+        -WindowStyle Hidden `
+        -Wait `
+        -RedirectStandardError "$mkvDir\\error.log" `
+        -RedirectStandardOutput "$mkvDir\\output.log"
     Write-Host "Conversion complete."
 
     # Remove staging folder in MKV directory
