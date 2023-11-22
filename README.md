@@ -4,7 +4,7 @@
 
 PowerShell function to automate conversion of DVD or disc-form video media into MP4 files for use with [Jellyfin](https://jellyfin.org/).
 
-### High-Level Steps
+## High-Level Steps
 
 1. Set up variables required and create staging directory
 2. Execute [MakeMKV](https://www.makemkv.com/) to pull disc info
@@ -41,3 +41,7 @@ Most parameters have default values that can be overwritten to suit your needs.
 * `ProcessingPath` : script processing path, should have adequate permissions to create directory for staging MKV file
 * `OutputDirectory` : directory to output processed `.mp4` file
 * `ArchivePath` : path to write `.zip` file including conversion logs and disc information
+
+## Sample Execution
+
+![stdout](sample%20run.png)
